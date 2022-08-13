@@ -1,1 +1,3 @@
-# TFM_machine_learning_algorithm
+# machine_learning
+requirments install command:
+python3 -m pip install -r requirements.txt 
