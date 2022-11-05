@@ -7,7 +7,7 @@ clc
 %% CONTROL group
 cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\';
 % cal escollir un dels dos sets de dades (A o B)
-load([cami, 'A-morphoTensorCoG.mat'])
+% load([cami, 'A-morphoTensorCoG.mat'])
 % load([cami, 'B-morphoTensorCoG.mat'])
 A=morphoTensor;
 % load([cami, 'B-morphoTensorCoG.mat'])
@@ -29,7 +29,7 @@ for f = 1:numVar
         end
         
         (Q(11)-Q(10))/Q(11)
-        if ((Q(11)-Q(10))/Q(11))>0.4
+        if ((Q(11)-Q(10))/Q(11))>0.39
             disp('HI HA OUTLIER')
             title(['Caracteristica: ',num2str(f),' Jambo: ',num2str(s)])
             pause
