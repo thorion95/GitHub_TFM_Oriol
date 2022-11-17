@@ -1,7 +1,7 @@
 %% exploring possible outliers in the morphometric data extracted from FreeSurfer
 
 clear all
-close all
+% close all
 clc
 
 %% CONTROL group
@@ -115,7 +115,7 @@ close all
 clc
 
 % GIFTED group
-cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\Oriol\Oriol\';
+cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\';
 % cal escollir un dels dos sets de dades (A o B)
 load([cami, 'A-morphoTensorGiG.mat'])
 % load([cami, 'B-morphoTensorGiG.mat'])
@@ -221,9 +221,9 @@ pause
 % si les dades fossin molt iguals, el núvol de punts s'hauria d'aproximar a
 % una recta de 45º
 
-load('c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\Oriol\Oriol\A-morphoTensorCoG.mat')
+load('c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\A-morphoTensorCoG.mat')
 A=morphoTensor;
-load('c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\Oriol\Oriol\B-morphoTensorCoG.mat')
+load('c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\B-morphoTensorCoG.mat')
 B=morphoTensor;
 
 % plots
