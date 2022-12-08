@@ -7,19 +7,19 @@ addpath('my_variable')
 
 %% MENU OPTIONS
 % SHOW OUTLIERS FROM OWN SOLUTION? (show graphics with outliers)
-show_outliers_oriol = 'no';              %yes/no/all  (all: graphic by graphic/yes: only show outliers/no: dont show anything)
+show_outliers_oriol = 'no'              %yes/no/all  (all: graphic by graphic/yes: only show outliers/no: dont show anything)
 % SHOW OUTLIERS FROM FUNCTION? (show outliers classification)
-show_outliers_function = 'yes';          %yes/no/setA/setB  (yes: both/no: none/setA: only first/setB: only second)
+show_outliers_function = 'yes'          %yes/no/setA/setB  (yes: both/no: none/setA: only first/setB: only second)
 % MASK OPTIONS
-save_to_file = 'yes';                     %yes/no yes to save, no to do not save the mask generated
-generate_masked_values = 'yes';          %yes/no yes to generated mask of 1 and 0 merged with initial values matrix
-outlier_rang = 0.45                      %rang stipulated to select where is an outlier (com + alt + amunt es situa el llindar)
+save_to_file = 'yes'                     %yes/no yes to save, no to do not save the mask generated
+generate_masked_values = 'yes'          %yes/no yes to generated mask of 1 and 0 merged with initial values matrix
+outlier_rang = 0.4                      %rang stipulated to select where is an outlier
 % DATA SET TO LOAD
 cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\';
-% load([cami, 'A-morphoTensorCoG.mat']);file_name_mask_1='my_variable/mask_A_CO.mat';file_name_mask_merged_1='my_variable/mask_A_CO_merged.mat';type='control';dataset='A';
-% load([cami, 'A-morphoTensorGiG.mat']);file_name_mask_1='my_variable/mask_A_Gi.mat';file_name_mask_merged_1='my_variable/mask_A_Gi_merged.mat';type='gifted';dataset='A';
-load([cami, 'B-morphoTensorCoG.mat']);file_name_mask_1='my_variable/mask_B_CO.mat';file_name_mask_merged_1='my_variable/mask_B_CO_merged.mat';type='control';dataset='B';
-% load([cami, 'B-morphoTensorGiG.mat']);file_name_mask_1='my_variable/mask_B_Gi.mat';file_name_mask_merged_1='my_variable/mask_B_Gi_merged.mat';type='gifted';dataset='B';
+load([cami, 'A-morphoTensorCoG.mat']);file_name_mask_1='my_variable/mask_A_CO.mat';file_name_mask_merged_1='my_variable/mask_A_CO_merged.mat';type='control';dataset = 'A';
+% load([cami, 'A-morphoTensorGiG.mat']);file_name_mask_1='my_variable/mask_A_Gi.mat';file_name_mask_merged_1='my_variable/mask_A_Gi_merged.mat';type='gifted';dataset = 'A'
+% load([cami, 'B-morphoTensorCoG.mat']);file_name_mask_1='my_variable/mask_B_CO.mat';file_name_mask_merged_1='my_variable/mask_B_CO_merged.mat';type='control';dataset = 'B'
+% load([cami, 'B-morphoTensorGiG.mat']);file_name_mask_1='my_variable/mask_B_Gi.mat';file_name_mask_merged_1='my_variable/mask_B_Gi_merged.mat';type='gifted';dataset ='B'
 
 A_initial = morphoTensor;
 A = morphoTensor;
@@ -28,11 +28,11 @@ maskA(maskA > 0) = 1;
 [numReg, numVar, numSubject] = size(morphoTensor)
 % numReg = 308; f numVar = 7; s numSubject = 14
 
-%% Outliers per feature BEFORE CORRECTION
-fprintf("Scanning %s group of %s data set\n",type,dataset)
+%% Outliers per feature numSubject/numVar/numReg/A
+fprintf("Scanning %s group of %s data set",type,dataset)
 if strcmp(show_outliers_function,"yes") == 1
     scan_all_info(numSubject,numVar,numReg,A,type)
-    fprintf('DONE %s %s!!!\n',type,dataset)
+    disp('DONE %s %s!!!',type,dataset)
     pause
 end
 
@@ -41,7 +41,7 @@ end
 % CONTROL group A 2016
 
 figure
-for refinament = 1:6  %QUANTITAT DE VEGADES QUE ES REFINARA LA PART POSITIVA DE LA SEÑAL
+for refinament = 1:3  %QUANTITAT DE VEGADES QUE ES REFINARA LA PART POSITIVA DE LA SEÑAL
     fprintf('-------------------PASSADA %s-------------------\n',num2str(refinament))
     for f = 1:numVar
         for s = 1:numSubject
@@ -106,17 +106,17 @@ for refinament = 1:6  %QUANTITAT DE VEGADES QUE ES REFINARA LA PART POSITIVA DE 
             end
         end
     end
-    outlier_rang = outlier_rang - 0.03;
+    outlier_rang = outlier_rang - 0.05;
 end
 aux = maskA;
 merged_matrix = generate_mask_plus_initial_values(generate_masked_values,maskA,A);
 save_file(save_to_file,file_name_mask_1,aux,file_name_mask_merged_1,merged_matrix);
 
-%% Outliers per AFTER CORRECTION
+%% Outliers per feature numSubject/numVar/numReg/A
 
 if strcmp(show_outliers_function,"yes") == 1
-    scan_all_info(numSubject,numVar,numReg,A,type)
-    fprintf('DONE %s %s!!!\n',type,dataset)
+    scan_all_info_control(numSubject,numVar,numReg,A)
+    disp('DONE!!!')
     pause
 end
 

@@ -9,14 +9,16 @@ addpath(genpath(pwd));
 
 %%  Data
 % load tensor data
-load([cami, 'A - morphoTensorCoG.mat'])
+cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\';
+load([cami, 'A-morphoTensorCoG.mat'])
 % load([cami, 'B - morphoTensorCoG.mat']);    %%% Aqí hi has de posar un dels tensors (A o B)
 X = morphoTensor;
 clear morphoTensor;
 
 % load mask for missing entries
-load Mask;    %%% Mask l'has de construir (val '1' en els valors bons i '0' en els outliers
+load('mask_A_CO.mat','maskA');    %%% Mask l'has de construir (val '1' en els valors bons i '0' en els outliers
 % generate observed data (with missing entries)
+Mask = maskA
 O = Mask;
 Y = X.*O; % observed data 
 

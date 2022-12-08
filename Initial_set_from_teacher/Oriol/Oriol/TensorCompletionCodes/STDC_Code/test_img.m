@@ -5,14 +5,15 @@ addpath 'tensor_basicfun';
 X = double(imread('lena.bmp'))/255;
 tsize = size(X);
 
-% m_rate = 0.8;
-% rand('seed',0);%rng(0);
-% idx = randperm(numel(X));
-% mark = zeros(tsize);
-% mark(idx(1:floor(m_rate*numel(X)))) = 1;
-% mark = boolean(mark);
+m_rate = 0.2;
+rand('seed',0);%rng(0);
+idx = randperm(numel(X));
+mark = zeros(tsize);
+mark(idx(1:floor(m_rate*numel(X)))) = 1;
+mark = boolean(mark);
 
-load('E:\PhD\Experiments\Simultaneous Tensor Decomposition and Completion\data\image\mark_m60.mat');
+% load('c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\mask_A.mat');
+% load('E:\PhD\Experiments\Simultaneous Tensor Decomposition and Completion\data\image\mark_m60.mat');
 Xm = X;
 Xm(mark) = 0;
 %% Construction of Factor-related Graph
