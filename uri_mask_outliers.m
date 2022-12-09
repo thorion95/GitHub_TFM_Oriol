@@ -6,209 +6,164 @@ addpath('my_functions')
 addpath('my_variable')
 
 %% MENU OPTIONS
+% ONLY COMPARE?
+compare_2_data_sets = 'only';               %yes/no/only
 % SHOW OUTLIERS FROM OWN SOLUTION? (show graphics with outliers)
 show_outliers_oriol = 'no';              %yes/no/all  (all: graphic by graphic/yes: only show outliers/no: dont show anything)
 % SHOW OUTLIERS FROM FUNCTION? (show outliers classification)
-show_outliers_function = 'yes';          %yes/no/setA/setB  (yes: both/no: none/setA: only first/setB: only second)
+show_outliers_function = 'yes';           %yes/no/setA/setB  (yes: both/no: none/setA: only first/setB: only second)
 % MASK OPTIONS
-save_to_file = 'yes';                     %yes/no yes to save, no to do not save the mask generated
+save_to_file = 'yes';                    %yes/no yes to save, no to do not save the mask generated
 generate_masked_values = 'yes';          %yes/no yes to generated mask of 1 and 0 merged with initial values matrix
 outlier_rang = 0.45                      %rang stipulated to select where is an outlier (com + alt + amunt es situa el llindar)
-% DATA SET TO LOAD
-cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\';
-% load([cami, 'A-morphoTensorCoG.mat']);file_name_mask_1='my_variable/mask_A_CO.mat';file_name_mask_merged_1='my_variable/mask_A_CO_merged.mat';type='control';dataset='A';
-% load([cami, 'A-morphoTensorGiG.mat']);file_name_mask_1='my_variable/mask_A_Gi.mat';file_name_mask_merged_1='my_variable/mask_A_Gi_merged.mat';type='gifted';dataset='A';
-load([cami, 'B-morphoTensorCoG.mat']);file_name_mask_1='my_variable/mask_B_CO.mat';file_name_mask_merged_1='my_variable/mask_B_CO_merged.mat';type='control';dataset='B';
-% load([cami, 'B-morphoTensorGiG.mat']);file_name_mask_1='my_variable/mask_B_Gi.mat';file_name_mask_merged_1='my_variable/mask_B_Gi_merged.mat';type='gifted';dataset='B';
+%% DATA SET TO LOAD 1
+% INITIAL SET
+% cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\';
+% load([cami, 'A-morphoTensorCoG.mat']);file_name_mask_1='my_variable/mask_A_CO.mat';file_name_mask_merged_1='my_variable/mask_A_CO_merged.mat';load_var=morphoTensor;type='control';dataset='INITIAL CO_A';
+% load([cami, 'A-morphoTensorGiG.mat']);file_name_mask_1='my_variable/mask_A_Gi.mat';file_name_mask_merged_1='my_variable/mask_A_Gi_merged.mat';load_var=morphoTensor;type='gifted';dataset='INITIAL Gi_A';
+% load([cami, 'B-morphoTensorCoG.mat']);file_name_mask_1='my_variable/mask_B_CO.mat';file_name_mask_merged_1='my_variable/mask_B_CO_merged.mat';load_var=morphoTensor;type='control';dataset='INITIAL CO_B';
+% load([cami, 'B-morphoTensorGiG.mat']);file_name_mask_1='my_variable/mask_B_Gi.mat';file_name_mask_merged_1='my_variable/mask_B_Gi_merged.mat';load_var=morphoTensor;type='gifted';dataset='INITIAL Gi_B';
 
-A_initial = morphoTensor;
-A = morphoTensor;
+% ORIOL SET
+cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\my_variable\';
+load([cami, 'mask_A_CO_merged.mat']);load_var=merged_matrix;type='resultat from reconstruction';dataset='CO_A';type='control';dataset='ORIOL CO_A';
+
+% RECONSTRUCTED SET
+% load([cami, 'resultat_A_CO.mat']);load_var=X_STDC;type='resultat from reconstruction';dataset='CO_A';type='control';dataset='RECONSTRUCTED CO_A';
+% load([cami, 'resultat_A_Gi.mat']);load_var=X_STDC;type='resultat from reconstruction';dataset='Gi_A';type='control';dataset='Gi_A';
+
+
+A = load_var;
 maskA = A;
 maskA(maskA > 0) = 1;
-[numReg, numVar, numSubject] = size(morphoTensor)
+[numReg, numVar, numSubject] = size(A)
 % numReg = 308; f numVar = 7; s numSubject = 14
 
 %% Outliers per feature BEFORE CORRECTION
 fprintf("Scanning %s group of %s data set\n",type,dataset)
-if strcmp(show_outliers_function,"yes") == 1
+if strcmp(show_outliers_function,"yes") | strcmp(show_outliers_function,"setA")==1 && strcmp(compare_2_data_sets,"only")~= 1
     scan_all_info(numSubject,numVar,numReg,A,type)
     fprintf('DONE %s %s!!!\n',type,dataset)
     pause
 end
 
 %% OWN SOLUTION
-
 % CONTROL group A 2016
 
-figure
-for refinament = 1:6  %QUANTITAT DE VEGADES QUE ES REFINARA LA PART POSITIVA DE LA SEÑAL
-    fprintf('-------------------PASSADA %s-------------------\n',num2str(refinament))
-    for f = 1:numVar
-        for s = 1:numSubject
-            plot(A(:,f,s))
-            hold on
-            m = mean(A(:,f,s)); %MITJANA
-            ds = std(A(:,f,s));  %DESVIACIÓ ESTÀNDARD
-            med = median(A(:,f,s)); %MEDIANA
-            Q = quantile(A(:,f,s),[0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1]); %QUARTILS
-            yline(m,'--','mean    ')
-            for q = 1:length(Q)
-                yline(Q(q),':','Q')
-            end
-            yOutlier_sup = ((-Q(10))/(outlier_rang-1)); % EL LIMIT SUPERIOR SERA EL VALOR DEFINIT COM A UMBRAL MULTIPLICAT PEL VALOR MES ALT + EL SEGON VALOR MES PETIT
-            yline(yOutlier_sup,'--','Outlier rang SUP    ')
-            
-            Q1m = ((m-Q(1))+m);
-            Q2m = ((m-Q(2))+m);
-            yOutlier_inf = m-(((-Q2m)/(outlier_rang-1))-m);
-            yline(yOutlier_inf,'--','Outlier rang INF    ')
-            
-            Otl_sup =(Q(11)-Q(10))/Q(11);
-            Otl_inf = ((Q1m-Q2m)/Q1m); % TROBEM LA DIFERENCIA AMB LA MITJANA I LI SUMEM LA MITJANA PER POSAR-HO PER LA PART DE DALT (IGUALTAT DE CONDICIONS)
+if strcmp(compare_2_data_sets,"only") ~= 1
+    figure
+    for refinament = 1:6 
+        fprintf('-------------------PASSADA %s-------------------\n',num2str(refinament))
+        for f = 1:numVar
+            for s = 1:numSubject
+                plot(A(:,f,s))
+                hold on
+                m = mean(A(:,f,s)); %MITJANA
+                ds = std(A(:,f,s));  %DESVIACIÓ ESTÀNDARD
+                med = median(A(:,f,s)); %MEDIANA
+                Q = quantile(A(:,f,s),[0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1]); %QUARTILS
+                yline(m,'--','mean    ')
+                for q = 1:length(Q)
+                    yline(Q(q),':','Q')
+                end
+                yOutlier_sup = ((-Q(10))/(outlier_rang-1)); % EL LIMIT SUPERIOR SERA EL VALOR DEFINIT COM A UMBRAL MULTIPLICAT PEL VALOR MES ALT + EL SEGON VALOR MES PETIT
+                yline(yOutlier_sup,'--','Outlier rang SUP    ')
 
-            if ((Q(11)-Q(10))/Q(11))> outlier_rang %SI SUPERA LA NORMALITZACIÓ DE LA DIFERÉNCIA DELS DOS ÚLTIMS QUARTILS SOTA UN MINIM APLICAT
-                fprintf('HI HA OUTLIER SUPERIOR Caracteristica: %s Subjecte: %s',num2str(f),num2str(s))
-                index = find(A(:,f,s) >= ((-Q(10))/(outlier_rang-1)));
-                for ind = 1:length(index)
-                    fprintf(' Index: %i',index(ind))
+                Q1m = ((m-Q(1))+m);
+                Q2m = ((m-Q(2))+m);
+                yOutlier_inf = m-(((-Q2m)/(outlier_rang-1))-m);
+                yline(yOutlier_inf,'--','Outlier rang INF    ')
+
+                Otl_sup =(Q(11)-Q(10))/Q(11);
+                Otl_inf = ((Q1m-Q2m)/Q1m); % TROBEM LA DIFERENCIA AMB LA MITJANA I LI SUMEM LA MITJANA PER POSAR-HO PER LA PART DE DALT (IGUALTAT DE CONDICIONS)
+
+                if ((Q(11)-Q(10))/Q(11))> outlier_rang %SI SUPERA LA NORMALITZACIÓ DE LA DIFERÉNCIA DELS DOS ÚLTIMS QUARTILS SOTA UN MINIM APLICAT
+                    fprintf('HI HA OUTLIER SUPERIOR Caracteristica: %s Subjecte: %s',num2str(f),num2str(s))
+                    index = find(A(:,f,s) >= ((-Q(10))/(outlier_rang-1)));
+                    for ind = 1:length(index)
+                        fprintf(' Index: %i',index(ind))
+                    end
+                    fprintf('\n')
+                    A(index,f,s) = m;
+                    maskA(index,f,s) = 0;
+                    xline(index,'--','Outlier X')
+                    title(['Caracteristica: ',num2str(f),' Subjecte: ',num2str(s)])
+
+                    if strcmp(show_outliers_oriol,"yes") == 1 
+                        pause
+                    end
                 end
-                fprintf('\n')
-                A(index,f,s) = m;
-                maskA(index,f,s) = 0;
-                xline(index,'--','Outlier X')
+                if ((Q1m-Q2m)/Q1m)> outlier_rang + 0.1 %SI SUPERA LA NORMALITZACIÓ DE LA DIFERÉNCIA DELS DOS ÚLTIMS QUARTILS SOTA UN MINIM APLICAT A LA PART SUPERIOR DE LA MITJANA
+                    fprintf('HI HA OUTLIER INFERIOR Caracteristica: %s Subjecte: %s',num2str(f),num2str(s))
+                    index = find(A(:,f,s) < m-(((-Q2m)/(outlier_rang-1))-m));
+                    for ind = 1:length(index)
+                        fprintf(' Index: %i',index(ind))
+                    end
+                    fprintf('\n')
+                    A(index,f,s) = m;
+                    maskA(index,f,s) = 0;
+                    xline(index,'--','Outlier X')
+                    title(['Caracteristica: ',num2str(f),' Subjecte: ',num2str(s)])
+
+                    if strcmp(show_outliers_oriol,"yes") == 1 
+                        pause
+                    end
+                end
                 title(['Caracteristica: ',num2str(f),' Subjecte: ',num2str(s)])
-                
-                if strcmp(show_outliers_oriol,"yes") == 1 
+                axis padded
+                hold off
+                if strcmp(show_outliers_oriol,"all") == 1 
                     pause
                 end
-            end
-            if ((Q1m-Q2m)/Q1m)> outlier_rang + 0.1 %SI SUPERA LA NORMALITZACIÓ DE LA DIFERÉNCIA DELS DOS ÚLTIMS QUARTILS SOTA UN MINIM APLICAT A LA PART SUPERIOR DE LA MITJANA
-                fprintf('HI HA OUTLIER INFERIOR Caracteristica: %s Subjecte: %s',num2str(f),num2str(s))
-                index = find(A(:,f,s) < m-(((-Q2m)/(outlier_rang-1))-m));
-                for ind = 1:length(index)
-                    fprintf(' Index: %i',index(ind))
-                end
-                fprintf('\n')
-                A(index,f,s) = m;
-                maskA(index,f,s) = 0;
-                xline(index,'--','Outlier X')
-                title(['Caracteristica: ',num2str(f),' Subjecte: ',num2str(s)])
-                
-                if strcmp(show_outliers_oriol,"yes") == 1 
-                    pause
-                end
-            end
-            title(['Caracteristica: ',num2str(f),' Subjecte: ',num2str(s)])
-            axis padded
-            hold off
-            if strcmp(show_outliers_oriol,"all") == 1 
-                pause
             end
         end
+        outlier_rang = outlier_rang - 0.01;
     end
-    outlier_rang = outlier_rang - 0.03;
+    aux = maskA;
+    merged_matrix = generate_mask_plus_initial_values(generate_masked_values,maskA,A);
+    save_file(save_to_file,file_name_mask_1,aux,file_name_mask_merged_1,merged_matrix);
 end
-aux = maskA;
-merged_matrix = generate_mask_plus_initial_values(generate_masked_values,maskA,A);
-save_file(save_to_file,file_name_mask_1,aux,file_name_mask_merged_1,merged_matrix);
 
 %% Outliers per AFTER CORRECTION
 
-if strcmp(show_outliers_function,"yes") == 1
+if strcmp(show_outliers_function,"yes") | strcmp(show_outliers_function,"setB")==1 && strcmp(compare_2_data_sets,"only")== 1
     scan_all_info(numSubject,numVar,numReg,A,type)
     fprintf('DONE %s %s!!!\n',type,dataset)
     pause
 end
 
+if strcmp(compare_2_data_sets,"only")== 1
+    fprintf('COMPARED %s %s WITH',type,dataset)
+end
 
-% file_name_mask_2 = 'my_variable/mask_B_CO.mat'      %name of file for mask B
-% file_name_mask_merged_2 = 'my_variable/mask_B_CO_merged.mat'      %name of file for mask merged with data set
-% %% CONTROL group B 2019
+%% DATA SET TO LOAD 2 (to compare)
+% initial data
 % cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\';
-% % cal escollir un dels dos sets de dades (A o B)
-% load([cami, 'B-morphoTensorCoG.mat'])
-% % load([cami, 'B-morphoTensorGiG.mat'])
-% B_initial = morphoTensor;
-% B=morphoTensor;
-% maskB = B;
-% maskB(maskB > 0) = 1;
-% % load([cami, 'B-morphoTensorCoG.mat'])
-% [numReg, numVar, numSubject] = size(morphoTensor);
-% % numReg = 308; numVar = 7; numSubject = 14
-% 
-% 
-% disp('GIFTED GROUP')
-% figure
-% 
-% for refinament = 1:2
-%     for f = 1:numVar
-%         for s = 1:numSubject
-%             plot(B(:,f,s))
-%             hold on
-%             m = mean(B(:,f,s)); %MITJANA
-%             ds = std(B(:,f,s));  %DESVIACIÓ ESTÀNDARD
-%             med = median(B(:,f,s)); %MEDIANA
-%             Q = quantile(B(:,f,s),[0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1]); %QUARTILS
-%             yline(m,'--','mean')
-%             for q = 1:length(Q)
-%                 yline(Q(q),':','Q')
-%             end
-%             yOutlier_sup = ((-Q(10))/(outlier_rang-1)); % EL LIMIT SUPERIOR SERA EL VALOR DEFINIT COM A UMBRAL MULTIPLICAT PEL VALOR MES ALT + EL SEGON VALOR MES PETIT
-%             yline(yOutlier_sup,'--','Outlier rang SUP    ')
-%             
-%             Q1m = ((m-Q(1))+m);
-%             Q2m = ((m-Q(2))+m);
-%             yOutlier_inf = m-(((-Q2m)/(outlier_rang-1))-m);
-%             yline(yOutlier_inf,'--','Outlier rang INF    ')
-%             
-%             Otl_sup =(Q(11)-Q(10))/Q(11);
-%             Otl_inf = ((Q1m-Q2m)/Q1m); % TROBEM LA DIFERENCIA AMB LA MITJANA I LI SUMEM LA MITJANA PER POSAR-HO PER LA PART DE DALT (IGUALTAT DE CONDICIONS)
-% 
-%             if ((Q(11)-Q(10))/Q(11))> outlier_rang %SI SUPERA LA NORMALITZACIÓ DE LA DIFERÉNCIA DELS DOS ÚLTIMS QUARTILS SOTA UN MINIM APLICAT
-%                 fprintf('HI HA OUTLIER SUPERIOR Caracteristica: %s Subjecte: %s',num2str(f),num2str(s))
-%                 index = find(B(:,f,s) >= ((-Q(10))/(outlier_rang-1)));
-%                 for ind = 1:length(index)
-%                     fprintf(' Index: %i',index(ind))
-%                 end
-%                 fprintf('\n')
-%                 B(index,f,s) = m;
-%                 maskB(index,f,s) = 0;
-%                 xline(index,'--','Outlier X')
-%                 title(['Caracteristica: ',num2str(f),' Subjecte: ',num2str(s)])
-% %                 pause
-%             end
-%             if ((Q1m-Q2m)/Q1m)> outlier_rang %SI SUPERA LA NORMALITZACIÓ DE LA DIFERÉNCIA DELS DOS ÚLTIMS QUARTILS SOTA UN MINIM APLICAT A LA PART SUPERIOR DE LA MITJANA
-%                 fprintf('HI HA OUTLIER INFERIOR Caracteristica: %s Subjecte: %s',num2str(f),num2str(s))
-%                 index = find(B(:,f,s) < m-(((-Q2m)/(outlier_rang-1))-m));
-%                 for ind = 1:length(index)
-%                     fprintf(' Index: %i',index(ind))
-%                 end
-%                 fprintf('\n')
-%                 B(index,f,s) = m;
-%                 maskB(index,f,s) = 0;
-%                 xline(index,'--','Outlier X')
-%                 title(['Caracteristica: ',num2str(f),' Subjecte: ',num2str(s)])
-% %                 pause
-%             end
-% 
-%             title(['Caracteristica: ',num2str(f),' Subjecte: ',num2str(s)])
-%             axis padded
-%             hold off
-% %             pause
-%         end
-%     end
-%     fprintf('-------------------PASSADA %s-------------------\n',num2str(refinament))
-% end
-% 
-% aux = maskB;
-% merged_matrix = generate_mask_plus_initial_values(generate_masked_values,maskB,B);
-% save_file(save_to_file,file_name_mask_2,aux,file_name_mask_merged_2,merged_matrix);
-% 
-% if strcmp(show_outliers_function,"yes") == 1
-%     scan_all_info_gifted(numSubject,numVar,numReg,B)
-%     disp('GIFTED DONE!!!')
-%     pause
-% end
+% load([cami, 'A-morphoTensorCoG.mat']);load_var=morphoTensor;type='control';dataset='A';
+% load([cami, 'A-morphoTensorGiG.mat']);load_var=morphoTensor;type='gifted';dataset='A';
+% load([cami, 'B-morphoTensorCoG.mat']);load_var=morphoTensor;type='control';dataset='B';
+% load([cami, 'B-morphoTensorGiG.mat']);load_var=morphoTensor;type='gifted';dataset='B';
+% treated data
+cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\my_variable\';
+load([cami, 'resultat_A_CO.mat']);load_var=X_STDC;type='resultat from reconstruction';dataset='CO_A';type='control';dataset='RECONSTRUCTED CO_A';
+% load([cami, 'A-morphoTensorGiG.mat']);file_name_mask_1='my_variable/mask_A_Gi.mat';file_name_mask_merged_1='my_variable/mask_A_Gi_merged.mat';type='gifted';dataset='A';
+% load([cami, 'B-morphoTensorCoG.mat']);file_name_mask_1='my_variable/mask_B_CO.mat';file_name_mask_merged_1='my_variable/mask_B_CO_merged.mat';type='control';dataset='B';
+% load([cami, 'B-morphoTensorGiG.mat']);file_name_mask_1='my_variable/mask_B_Gi.mat';file_name_mask_merged_1='my_variable/mask_B_Gi_merged.mat';type='gifted';dataset='B';
+
+
+% %% CONTROL group B 2019
+B=load_var;
+
+if strcmp(compare_2_data_sets,"only")== 1
+    fprintf(' %s %s',type,dataset)
+end
+
+if strcmp(compare_2_data_sets,"yes")==1 | strcmp(compare_2_data_sets,"only")==1
+    scan_all_info(numSubject,numVar,numReg,B,type)
+    fprintf('%s %s!!!\n',type,dataset)
+    pause
+end
+
 % 
 % 
 % for f = 1:numVar

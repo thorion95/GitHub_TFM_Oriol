@@ -11,8 +11,8 @@ addpath('my_variable');
 % load tensor data
 cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\';
 % select tensor data
-% load([cami, 'A-morphoTensorCoG.mat']);load('my_variable\mask_A_CO.mat','mask');file_name_save='my_variable/resultat_A_CO.mat';type='control';dataset='A';
-load([cami, 'B-morphoTensorCoG.mat']);load('my_variable\mask_B_CO.mat','mask');file_name_save='my_variable/resultat_B_CO.mat';type='control';dataset='B';
+load([cami, 'A-morphoTensorCoG.mat']);load('my_variable\mask_A_CO.mat','mask');file_name_save='my_variable/resultat_A_CO.mat';type='control';dataset='A';
+load([cami, 'B-morphoTensorCoG.mat']);load('my_variable\mask_B_CO.mat','mask');file_name_save='my_variable/resultat_A_CO.mat';type='control';dataset='A';
 % load([cami, 'B - morphoTensorCoG.mat']);    %%% Aqí hi has de posar un dels tensors (A o B)
 X = morphoTensor;
 clear morphoTensor;
