@@ -1,18 +1,27 @@
 % Simulation for tensor completion
 % Trying several algorithms...
 
-
 close all;
 clear all;
 clc;
 addpath(genpath(pwd));
 addpath('my_variable');
+addpath('my_mask');
 %%  Data
 % load tensor data
 cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\';
 % select tensor data
-load([cami, 'A-morphoTensorCoG.mat']);load('my_variable\mask_A_CO.mat','mask');file_name_save='my_variable/resultat_A_CO.mat';type='control';dataset='A';
-load([cami, 'B-morphoTensorCoG.mat']);load('my_variable\mask_B_CO.mat','mask');file_name_save='my_variable/resultat_A_CO.mat';type='control';dataset='A';
+
+% load([cami, 'A-morphoTensorCoG.mat']);load('my_mask\mask_A_CO.mat','mask');file_name_save='my_results/resultat_reconstructed_A_CO_merged.mat';type='control';dataset='A';
+% load([cami, 'A-morphoTensorGiG.mat']);load('my_mask\mask_A_Gi.mat','mask');file_name_save='my_results/resultat_reconstructed_A_Gi_merged.mat';type='gifted';dataset='A';
+% load([cami, 'B-morphoTensorCoG.mat']);load('my_mask\mask_B_CO.mat','mask');file_name_save='my_results/resultat_reconstructed_B_CO_merged.mat';type='control';dataset='B';
+% load([cami, 'B-morphoTensorGiG.mat']);load('my_mask\mask_B_Gi.mat','mask');file_name_save='my_results/resultat_reconstructed_B_Gi_merged.mat';type='gifted';dataset='B';
+
+% load([cami, 'A-morphoTensorCoG.mat']);load('my_mask\mask2_A_CO.mat','mask');file_name_save='my_results/resultat2_reconstructed_A_CO_merged.mat';type='control';dataset='A';
+% load([cami, 'A-morphoTensorGiG.mat']);load('my_mask\mask2_A_Gi.mat','mask');file_name_save='my_results/resultat2_reconstructed_A_Gi_merged.mat';type='gifted';dataset='A';
+% load([cami, 'B-morphoTensorCoG.mat']);load('my_mask\mask2_B_CO.mat','mask');file_name_save='my_results/resultat2_reconstructed_B_CO_merged.mat';type='control';dataset='B';
+load([cami, 'B-morphoTensorGiG.mat']);load('my_mask\mask2_B_Gi.mat','mask');file_name_save='my_results/resultat2_reconstructed_B_Gi_merged.mat';type='gifted';dataset='B';
+
 % load([cami, 'B - morphoTensorCoG.mat']);    %%% Aqí hi has de posar un dels tensors (A o B)
 X = morphoTensor;
 clear morphoTensor;

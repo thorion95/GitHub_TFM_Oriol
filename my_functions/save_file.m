@@ -1,11 +1,10 @@
-function [] = save_file(yes_no_option,file_name_mask,mask,file_name_mask_merged,merged_matrix)
+function [] = save_file(yes_no_option,data)
     if strcmp(yes_no_option,"yes") == 1
-        fprintf("SAVING MERGED AND MASK MATRIX \n")
-        save(file_name_mask,'mask')
-        save(file_name_mask_merged,'merged_matrix')
+        [file, path] = uiputfile('*.mat');
+        save(fullfile(path,file),'data');
+        fprintf('File saved successfully\n')
     else
-        fprintf("NOT SAVING MASK\n")
-        fprintf("NOT SAVING MERGED MATRIX\n")
+        fprintf('Not saved any file\n')
     end
 end
 

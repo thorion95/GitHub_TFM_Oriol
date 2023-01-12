@@ -1,26 +1,24 @@
 % Simulation for tensor completion
 % Trying several algorithms...
 
-
 close all;
 clear all;
 clc;
 addpath(genpath(pwd));
 addpath('my_variable');
+addpath('my_mask');
 %%  Data
-% load tensor data
-cami = 'c:\Users\orica\Desktop\Oriol\0_MASTER\3_any\TFM\working_area\GitHub_TFM_Oriol\Set_of_data_to_modify\';
-% select tensor data
-% load([cami, 'A-morphoTensorCoG.mat']);load('my_variable\mask_A_CO.mat','mask');file_name_save='my_variable/resultat_A_CO.mat';type='control';dataset='A';
-load([cami, 'B-morphoTensorCoG.mat']);load('my_variable\mask_B_CO.mat','mask');file_name_save='my_variable/resultat_B_CO.mat';type='control';dataset='B';
-% load([cami, 'B - morphoTensorCoG.mat']);    %%% Aqí hi has de posar un dels tensors (A o B)
-X = morphoTensor;
+disp('Load data to correct')
+[file, path] = uigetfile('*.mat');
+data = load(fullfile(path, file));
+X = data.morphoTensor;
 clear morphoTensor;
 
-% load mask for missing entries
-% load('mask_A_CO.mat','maskA');    %%% Mask l'has de construir (val '1' en els valors bons i '0' en els outliers
-% generate observed data (with missing entries)
-Mask = mask;
+disp('Load mask to use')
+[file, path] = uigetfile('*.mat');
+data2 = load(fullfile(path, file));
+
+Mask = data2.data;
 O = Mask;
 Y = X.*O; % observed data 
 
@@ -95,8 +93,7 @@ if 1
 end
 
 %% save results
-save(file_name_save,'X_STDC')
+disp('Save tensor generated')
+save_file('yes',X_STDC);
 % save resultats_Mask
 fprintf('======================Done 1 ======================================= \n');
-
-
