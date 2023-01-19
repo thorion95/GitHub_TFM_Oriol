@@ -22,3 +22,4 @@ El codi presenta el menú d'opcions següent:
    2. Comparar 3 set de dades NÚVOL DE PUNTS/REGRESSIÓ LINEAL
    3. Comparar correlacions
 
+
