@@ -1,5 +1,4 @@
 function scan_all_info(numSubject,numVar,numReg,A,type)
-
     if strcmp(type,"control") == 1
         variable_row = 2;
     elseif strcmp(type,"gifted") == 1
@@ -13,6 +12,7 @@ function scan_all_info(numSubject,numVar,numReg,A,type)
              listOfOutliers(r,m,:) = isoutlier(serie, 'mean');
         end
     end
+%     listOfOutliers = isoutlier(A,"ThresholdFactor",3);
     
     for f = 1:numVar
         im(:,:,f) = squeeze(listOfOutliers(:,f,:));
@@ -32,6 +32,7 @@ function scan_all_info(numSubject,numVar,numReg,A,type)
     
     figure
     bar(sum(numOutliersSubjectAndMeasure,1))
+    grid on
     title('Number of outliers per feature (all subjects)')
     pause
     figure
@@ -42,6 +43,7 @@ function scan_all_info(numSubject,numVar,numReg,A,type)
     
     figure
     bar(sum(numOutliersRegionAndMeasure,2))
+    grid on
     title('Number of outliers per region')
     pause
     figure
@@ -63,6 +65,7 @@ function scan_all_info(numSubject,numVar,numReg,A,type)
     
     figure
     bar(sum(numOutliersMeasuresAndSubjects,1))
+    grid on
     title('Number of outliers per subject')
     pause
     figure
@@ -73,12 +76,12 @@ function scan_all_info(numSubject,numVar,numReg,A,type)
     
     figure
     bar(sum(numOutliersRegionAndSubjects,2))
+    grid on
     title('Number of outliers per region')
     pause
     figure
     imagesc(numOutliersRegionAndSubjects)
     title('Number of outliers per region')
     [Outliers4, Region] = sort(sum(numOutliersRegionAndSubjects,2));
-    
 end
 

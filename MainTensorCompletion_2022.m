@@ -5,18 +5,22 @@ close all;
 clear all;
 clc;
 addpath(genpath(pwd));
-addpath('my_variable');
 addpath('my_mask');
+addpath('my_mask/Mean');
+addpath('my_mask/ThresholdFactor3');
+addpath('Set_of_data_to_modify');
 %%  Data
-disp('Load data to correct')
+disp('Carrega el set de dades inicials a reconstruir')
 [file, path] = uigetfile('*.mat');
 data = load(fullfile(path, file));
+fprintf('Loaded: %s\n',file)
 X = data.morphoTensor;
 clear morphoTensor;
 
-disp('Load mask to use')
+disp('Carrega la màscara que desitges')
 [file, path] = uigetfile('*.mat');
 data2 = load(fullfile(path, file));
+fprintf('Loaded: %s\n',file)
 
 Mask = data2.data;
 O = Mask;
@@ -93,7 +97,11 @@ if 1
 end
 
 %% save results
-disp('Save tensor generated')
+disp('Guardant el tensor generat X_hat1')
+save_file('yes',X_hat1);
+disp('Guardant el tensor generat X_hat2')
+save_file('yes',X_hat2);
+disp('Guardant el tensor generat X_STDC')
 save_file('yes',X_STDC);
 % save resultats_Mask
-fprintf('======================Done 1 ======================================= \n');
+fprintf('====================== Done ======================================= \n');
