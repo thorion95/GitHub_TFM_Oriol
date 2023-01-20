@@ -1,6 +1,6 @@
 # Treball de Final de Master
 
-## Descripción
+## Descripció
 
 L’objectiu principal d’aquest Treball de Final de Màster és proporcionar una eina que es pugui generalitzar per a qualsevol mostra, extreta de tècniques de diagnòstic mèdic emprades per a medi i registrar les senyals generades pel cos quan és exposat a un camp magnètic, o ressonància magnètica, a partir de la prèvia detecció de valors atípics i la seva posterior correcció mitjançant la reconstrucció amb algorismes basats en tensors.
 

@@ -157,7 +157,7 @@ if strcmp(action,"mask") == 1
     elseif strcmp(action,"correlacions") == 1
         %% opcio per correlar 3 sets de dades
         % carrega 2 variables
-        fprintf('Selecciona set de dades que direm A per comparar (set_results set A CoG/GiG)\n')
+        fprintf('Hauràs de seleccionar 3 dades per carregar A B i C per treuren la correlació A-C i B-C\nSelecciona les dades reconstruides com a A, les dades originals com a B i les dades C com les originals del set b\n')
         [file, path] = uigetfile('*.mat');
         file_split = strsplit(file, '.');
         file_name = file_split{1};
@@ -175,7 +175,7 @@ if strcmp(action,"mask") == 1
         [numReg, numVar, numSubject] = size(A);
         % numReg = 308; f numVar = 7; s numSubject = 14
 
-        fprintf('Selecciona set de dades que direm B per comparar (set_inicial set A CoG/GiG)\n')
+        fprintf('Selecciona set de dades B per comparar\n')
         [file, path] = uigetfile('*.mat');
         file_split = strsplit(file, '.');
         file_name2 = file_split{1};
@@ -240,10 +240,10 @@ if strcmp(action,"mask") == 1
                 corr_vect2(f,s) = corr_aux_2(1,2);
             end
         end
-        fprintf('\nCorrelació %s amb %s, guarda els resultats\n',file_name,file_name3)
+        fprintf('\nCorrelació %s amb %s, guarda els resultats de la correlació entre A i C\n',file_name,file_name3)
         corr_vect
         save_file(guardar_resultats,corr_vect);
-        fprintf('\nCorrelació %s amb %s, guarda els resultats\n',file_name2,file_name3)
+        fprintf('\nCorrelació %s amb %s, guarda els resultats de la correlació entre B i C\n',file_name2,file_name3)
         corr_vect2
         save_file(guardar_resultats,corr_vect2);
     end
@@ -252,7 +252,7 @@ elseif strcmp(action,"compare") == 1
     if strcmp(action,"outliers") == 1
         %% opcio per veure els outliers de les dades 
         % carrega 1 variable
-        fprintf('Selecciona set de dades que direm A per comparar (set_results set A CoG/GiG)\n')
+        fprintf('Selecciona set de dades per analitzar els outliers\n')
         [file, path] = uigetfile('*.mat');
         file_split = strsplit(file, '.');
         file_name = file_split{1};
@@ -279,7 +279,7 @@ elseif strcmp(action,"compare") == 1
     elseif strcmp(action,"dades") == 1
         %% opcio per comparar 3 sets de dades
         % carrega 2 variables
-        fprintf('Selecciona set de dades que direm A per comparar (set_results set A CoG/GiG)\n')
+        fprintf('Es generarà el núvol de punts resultat de la comparació entre les dades A, B i C.\nSelecciona les dades A (la que vulguis de les reconstruides per comparar), les dades inicials B (dades_a sense tocar) i les dades finals C (dades_b del mateix grup)\n')
         [file, path] = uigetfile('*.mat');
         file_split = strsplit(file, '.');
         file_name = file_split{1};
